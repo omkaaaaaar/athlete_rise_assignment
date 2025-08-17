@@ -1,10 +1,10 @@
 {
     "Footwork": {
-        "score": 5,
+        "score": 1,
         "feedback": "Work on aligning your front foot."
     },
     "Head Position": {
-        "score": 5,
+        "score": 6,
         "feedback": "Keep your head closer to front knee."
     },
     "Swing Control": {
@@ -16,7 +16,7 @@
         "feedback": "Avoid leaning too much."
     },
     "Follow-through": {
-        "score": 5,
-        "feedback": "Work on your finishing swing."
+        "score": 9,
+        "feedback": "Smooth controlled finish."
     }
 }
