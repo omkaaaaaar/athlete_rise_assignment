@@ -13,4 +13,3 @@ athlete_rise_assignment/
 │── /output/
 │ ├── annotated_video.mp4
 │ ├── evaluation.json
-
