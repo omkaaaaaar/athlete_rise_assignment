@@ -37,7 +37,66 @@ def extract_landmark(landmarks, idx, frame_w, frame_h):
         return None
 
 
+def evaluate_shot(metrics):
+    """Aggregate metrics into final evaluation scores + feedback."""
+    evaluation = {}
 
+    # Footwork
+    if metrics["foot_angle"]:
+        avg_angle = np.mean(metrics["foot_angle"])
+        footwork_score = np.clip(10 - abs(avg_angle), 1, 10)
+    else:
+        footwork_score = 5
+    evaluation["Footwork"] = {
+        "score": int(footwork_score),
+        "feedback": "Front foot aligned well." if footwork_score > 7 else "Work on aligning your front foot."
+    }
+
+    # Head Position
+    if metrics["head_knee_dist"]:
+        avg_dist = np.mean(metrics["head_knee_dist"])
+        head_score = 10 if avg_dist < 30 else 8 if avg_dist < 60 else 6
+    else:
+        head_score = 5
+    evaluation["Head Position"] = {
+        "score": int(head_score),
+        "feedback": "Head steady over knee." if head_score >= 8 else "Keep your head closer to front knee."
+    }
+
+    # Swing Control
+    if metrics["elbow_angle"]:
+        var = np.var(metrics["elbow_angle"])
+        swing_score = 9 if var < 50 else 7 if var < 100 else 5
+    else:
+        swing_score = 5
+    evaluation["Swing Control"] = {
+        "score": int(swing_score),
+        "feedback": "Consistent elbow position." if swing_score >= 7 else "Work on reducing elbow variability."
+    }
+
+    # Balance
+    if metrics["spine_angle"]:
+        avg_spine = np.mean(metrics["spine_angle"])
+        balance_score = 9 if 10 < avg_spine < 25 else 7 if 25 <= avg_spine <= 40 else 5
+    else:
+        balance_score = 5
+    evaluation["Balance"] = {
+        "score": int(balance_score),
+        "feedback": "Good body balance." if balance_score >= 7 else "Avoid leaning too much."
+    }
+
+    # Follow-through
+    if metrics["elbow_angle"]:
+        final_elbow = np.mean(metrics["elbow_angle"][-10:])  # last 10 frames
+        follow_score = 9 if 150 < final_elbow < 180 else 7 if 120 < final_elbow <= 150 else 5
+    else:
+        follow_score = 5
+    evaluation["Follow-through"] = {
+        "score": int(follow_score),
+        "feedback": "Smooth controlled finish." if follow_score >= 7 else "Work on your finishing swing."
+    }
+
+    return evaluation
 
 
 def analyze_video(video_path="input_video.mp4"):
